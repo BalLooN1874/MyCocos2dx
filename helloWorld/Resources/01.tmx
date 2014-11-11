@@ -21,20 +21,60 @@
  </tileset>
  <layer name="Background" width="50" height="50">
   <data encoding="base64" compression="zlib">
-   eJztztOalmEYgNH/FLI12Z5sTpps25rMyXZNtjl5ch1a6wTezb6vjee+rrV/VysUCtWpQU1qUZs61KUe9WlAQxrRmCY0Lfw/NaOI5rSgJa1oTRva0o72dKAjnehMlxx+U3WlG93pQU+K6UVv+tCXfvRnAAMZxODsd5MNYSjDGM4IRjKK0ZQwhrGMYzwTKGViDr+pJjGZKUxlGtOZwUxmMZs5zGUe81nAwux3ky1iMUtYyjKWs4KVrGI1a1jLOtazgY05/KbaxGbK2MJWtrGdHexkF7vZw172sZ/y7HeTHeAghzjMEY5yjOOc4CSnOM0ZznKO8zn8prrARS5xmStUcJVrXOcGN7nFbe5wl3vZ7ya7zwMe8ojHPOEpz3jOC17yite8oZK3Ofymesd7PvCRT3ymii985Rvf+cFPfvGbP9nvRlEURVEURVEURVEURVEURVEURVEURdE/6S/hgUfZ
+   eJztz8VWFmAYhdH/FmyxUDEwAQu7AxMM7EIE7O5Axe4u7MQW7NZLc3sL6uAbvM9ae3gGp1Emk2lME5rSjOa0oCVZtKI1bWhLO7JpT9l/9rd1oCM5dKIzXehKLt3oTg960ove5JGf0I8C+tCXfvRnAIUMZBCDGcJQhjGcEYxM6McoRjOGsYxjPBMoYiKTmMwUpjKNYkoS+jGdGcxkFqXMZg5zmcd8FrCQRSxmCUsT+vFnu4xyllNBJVWsYCWrWM0a1rKO9WxI6MdGNrGZLWxlG9vZwU52sZs97KWafexP6McBajjIIQ5zhKMc4zgnOMkpTnOGs5xL6Md5LnCRS1zmCle5xnVqucFNbnGbO9xN6Mc97vOAhzziMXU84SnPeM4LXvKK19Qn9KOBN7zlHe/5wEc+8ZkvfOUb3/nBT34l9COKoiiKoiiKoiiKoiiKoiiKoiiKoiiK/qXf7webNQ==
+  </data>
+ </layer>
+ <layer name="Layer11" width="50" height="50">
+  <data encoding="base64" compression="zlib">
+   eJztlbluwkAYBtd+F+iAhyE8dUjFJQRUQAUJ9x2OQSJitRjkiMJ/8Y00smRvMavdX3bufX4i5yY4xRnOsYwf0es11ljTtMEt7nCf0JhmTZbk6Mnj+doVOxdhHN+/t2+9J2+NxbMp0FD8Z4f1swkZ0TfG76Dz9OL8LLKgdYmrYB8W71Upet514PmLx6DT6r1K25U085buld8VzsT1vPx3HexiDz+xil9YyXQHj/+7pJnw3/VxgEOsYR0bBvYR4s9EKWFOmtgyMg9CCCGEEEIIIYQQQgghhBBCCCHEHxfW5mOS
   </data>
  </layer>
  <objectgroup name="Object-Player" width="50" height="50">
   <object name="PlayerShowUpPoint" x="195" y="268" width="37" height="30"/>
+  <object name="EnemyPosition3" x="706" y="67" width="30" height="28">
+   <properties>
+    <property name="Enemy" value="1"/>
+   </properties>
+  </object>
+  <object name="EnemyPosition3" x="695" y="117" width="39" height="42">
+   <properties>
+    <property name="Enemy" value="1"/>
+   </properties>
+  </object>
+  <object name="EnemyPosition3" x="802" y="95" width="29" height="31">
+   <properties>
+    <property name="Enemy" value="1"/>
+   </properties>
+  </object>
+  <object name="EnemyPosition3" x="708" y="192" width="54" height="31">
+   <properties>
+    <property name="Enemy" value="1"/>
+   </properties>
+  </object>
+  <object name="EnemyPosition3" x="568" y="108" width="39" height="44">
+   <properties>
+    <property name="Enemy" value="1"/>
+   </properties>
+  </object>
+  <object name="EnemyPosition3" x="904" y="147" width="41" height="34">
+   <properties>
+    <property name="Enemy" value="1"/>
+   </properties>
+  </object>
+  <object name="EnemyPosition3" x="789" y="2" width="38" height="30">
+   <properties>
+    <property name="Enemy" value="1"/>
+   </properties>
+  </object>
  </objectgroup>
  <layer name="Foreground01" width="50" height="50">
   <data encoding="base64" compression="zlib">
-   eJztz0EJAAAIADGxiv07+rCDoGxwAS4C9lVO1335AAAAAAAAAACADxoVKwCV
+   eJzt08EJgDAQBMAjbcSf/TdhZT6CCBIhxs+JM7D/XXKJYEQtLV+VrftaWmZtkWPTkx1LOXOV7b5qp2ev992WTHodR2TbMeq4xzf/K7PZ9wQAAAAAAAAA/mEHiYcDlg==
   </data>
  </layer>
  <layer name="Blockage01" width="50" height="50">
   <data encoding="base64" compression="zlib">
-   eJzt1TkOgDAMBED//1fhZTRUCMhRbdCM5CKRInkLO62q2kDVx32C1f7Tc1T1e0zP8eS4auZNoqccqWbm4/4uycgc984JVnZQWo6ZXbrT3n3rbbf/Y7YAAAAAAAAA4A9O6aJV9w==
+   eJzt1GEKwyAMhuHc/1b2ZKOwQfiITTK1v94HZMUmbdKpw8xGYVhz3t83F2fB/A7/1l/p73Z9R9bj7j7M8vdUer9crObN3rsie9bve85yKjVk+SfWWVSD1pHF+vgh9/z87h4669/Xo2vI0z2hcSf2fOW80Xoqe0Tr9P1X9+JKH52cKF+//9OeP9VD95zSe9G1SWz0v6yq9tFZR09zWf7OPjpj9jyT37fPWQAAAAAAAAAAAAAAOj6f9ay9
   </data>
  </layer>
 </map>
