@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="50" height="50" tilewidth="32" tileheight="32">
+ <tileset firstgid="1" name="01" tilewidth="32" tileheight="32" spacing="1" margin="1">
+  <image source="../../Resources/New_Town_Ex.png" trans="ff00ff" width="544" height="416"/>
+ </tileset>
+ <tileset firstgid="193" name="meta_tiles" tilewidth="32" tileheight="32" spacing="1" margin="1">
+  <image source="../../Resources/meta_tiles.png" trans="ff00ff" width="67" height="34"/>
+  <tile id="0">
+   <properties>
+    <property name="Blockage" value="true"/>
+   </properties>
+  </tile>
+  <tile id="1">
+   <properties>
+    <property name="Collectable" value="true"/>
+   </properties>
+  </tile>
+ </tileset>
+ <tileset firstgid="195" name="NewY" tilewidth="32" tileheight="32">
+  <image source="../../Resources/NewY.png" trans="ff00ff" width="256" height="1600"/>
+ </tileset>
+ <layer name="Background" width="50" height="50">
+  <data encoding="base64" compression="zlib">
+   eJztztOalmEYgNH/FLI12Z5sTpps25rMyXZNtjl5ch1a6wTezb6vjee+rrV/VysUCtWpQU1qUZs61KUe9WlAQxrRmCY0Lfw/NaOI5rSgJa1oTRva0o72dKAjnehMlxx+U3WlG93pQU+K6UVv+tCXfvRnAAMZxODsd5MNYSjDGM4IRjKK0ZQwhrGMYzwTKGViDr+pJjGZKUxlGtOZwUxmMZs5zGUe81nAwux3ky1iMUtYyjKWs4KVrGI1a1jLOtazgY05/KbaxGbK2MJWtrGdHexkF7vZw172sZ/y7HeTHeAghzjMEY5yjOOc4CSnOM0ZznKO8zn8prrARS5xmStUcJVrXOcGN7nFbe5wl3vZ7ya7zwMe8ojHPOEpz3jOC17yite8oZK3Ofymesd7PvCRT3ymii985Rvf+cFPfvGbP9nvRlEURVEURVEURVEURVEURVEURVEURdE/6S/hgUfZ
+  </data>
+ </layer>
+ <objectgroup name="Object-Player" width="50" height="50">
+  <object name="PlayerShowUpPoint" x="195" y="268" width="37" height="30"/>
+ </objectgroup>
+ <layer name="Foreground01" width="50" height="50">
+  <data encoding="base64" compression="zlib">
+   eJztz0EJAAAIADGxiv07+rCDoGxwAS4C9lVO1335AAAAAAAAAACADxoVKwCV
+  </data>
+ </layer>
+ <layer name="Blockage01" width="50" height="50">
+  <data encoding="base64" compression="zlib">
+   eJzt1TkOgDAMBED//1fhZTRUCMhRbdCM5CKRInkLO62q2kDVx32C1f7Tc1T1e0zP8eS4auZNoqccqWbm4/4uycgc984JVnZQWo6ZXbrT3n3rbbf/Y7YAAAAAAAAA4A9O6aJV9w==
+  </data>
+ </layer>
+</map>
