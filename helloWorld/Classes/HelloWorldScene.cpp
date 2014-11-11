@@ -1,7 +1,10 @@
 #include "HelloWorldScene.h"
+#include "SimpleAudioEngine.h"
 
 USING_NS_CC;
+using namespace CocosDenshion;
 
+HelloWorld::HelloWorldHud* HelloWorld::_hud = NULL;
 Scene* HelloWorld::createScene()
 {
     // 'scene' is an autorelease object
@@ -13,6 +16,10 @@ Scene* HelloWorld::createScene()
     // add layer as a child to scene
     scene->addChild(layer);
 
+	auto hud = HelloWorldHud::create();
+	_hud = hud;
+
+	scene->addChild(hud);
     // return the scene
     return scene;
 }
@@ -26,6 +33,17 @@ bool HelloWorld::init()
     {
         return false;
     }
+	_numCollected = 0;
+	//初始化音乐
+	SimpleAudioEngine* ptrAudio = SimpleAudioEngine::getInstance();
+	ptrAudio->preloadEffect("error.mp3");
+	ptrAudio->preloadEffect("item.mp3");
+	ptrAudio->preloadEffect("step.mp3");
+
+	ptrAudio->preloadEffect("wade.mp3");
+	ptrAudio->playBackgroundMusic("background.mp3");
+	ptrAudio->setBackgroundMusicVolume(0.1);
+	//添加地图
 	std::string file = "01.tmx";
 	auto str  = String::createWithContentsOfFile(FileUtils::getInstance()->fullPathForFilename(file.c_str()).c_str());
 	_tileMap = TMXTiledMap::createWithXML(str->getCString(), "");
@@ -33,6 +51,7 @@ bool HelloWorld::init()
 
 	addChild(_tileMap, -1);
 
+	//显示地图
 	TMXObjectGroup* objects = _tileMap->getObjectGroup("Object-Player");
 	CCASSERT(NULL != objects, "'Objects player' object group not find");
 	 
@@ -42,6 +61,7 @@ bool HelloWorld::init()
 	int x = playerShowPoint["x"].asInt();
 	int y = playerShowPoint["y"].asInt();
 
+	//添加精灵
 	_player = Sprite::create("029.png");
 	_player->setPosition(x + _tileMap->getTileSize().width / 2, y + _tileMap->getTileSize().height / 2);
 	_player->setScale(0.5);
@@ -58,6 +78,20 @@ bool HelloWorld::init()
 	_blockage->setVisible(false);
 
 	_foreground = _tileMap->getLayer("Foreground01");
+
+	//添加敌人
+	for (auto& eSpawnPoint: objects->getObjects())
+	{
+		ValueMap& dict = eSpawnPoint.asValueMap();
+		if (dict["Enemy"].asInt() == 1)
+		{
+			x = dict["x"].asInt();
+			y = dict["y"].asInt();
+			this->addEnemyAtPos(Point(x, y));
+		}
+		
+	}
+	
 	return true;
 #if 0
     Size visibleSize = Director::getInstance()->getVisibleSize();
@@ -106,6 +140,44 @@ bool HelloWorld::init()
     this->addChild(sprite, 0);
 #endif
     
+}
+//添加敌人
+void HelloWorld::addEnemyAtPos(cocos2d::Point pos)
+{
+	auto enemy = Sprite::create("030.png");
+	enemy->setPosition(pos);
+	enemy->setScale(0.5);
+	
+	this->animateEnemy(enemy);
+	this->addChild(enemy);
+	//_enemies->pus
+}
+void HelloWorld::enemyMoveFinished(cocos2d::Object* pSender)
+{
+	Sprite* enemy = (Sprite*)pSender;
+	this->animateEnemy(enemy);
+}
+void HelloWorld::animateEnemy(cocos2d::Sprite* enemy)
+{
+	auto actionTo1 = RotateTo::create(0, 0, 180);
+	auto actionTo2 = RotateTo::create(0, 0, 0);
+	auto diff = ccpSub(_player->getPosition(), enemy->getPosition());
+	if (diff.x < 0)
+	{
+		enemy->runAction(actionTo2);
+	}
+	if (diff.x > 0)
+	{
+		enemy->runAction(actionTo1);
+	}
+	
+	float actualDuration = 0.3f;
+	const Vec2& playPos = _player->getPosition();
+	const Vec2& enemyPos = enemy->getPosition();
+	const Vec2& position = (playPos - enemyPos).getNormalized() * 2;
+	auto actionmove = MoveBy::create(actualDuration, position);
+	auto actionMoveDone = CallFuncN::create(CC_CALLBACK_1(HelloWorld::enemyMoveFinished, this));
+	enemy->runAction(Sequence::create(actionmove, actionMoveDone, NULL));
 }
 cocos2d::Point HelloWorld::titleCoordForPosition(cocos2d::Point position)
 {
@@ -169,13 +241,18 @@ void HelloWorld::setPlayerPosition(cocos2d::Point position)
 			CCLOG("log: %s", collision.c_str());
 			if ("true" == collision)
 			{
+				SimpleAudioEngine::getInstance()->playEffect("error.mp3");
 				return;
 			}
 		}
+		SimpleAudioEngine::getInstance()->playEffect("step.mp3");
 		auto collectable = propertis["Collectable"].asString();
-		if ("True" == collectable)
+		if ("true" == collectable)
 		{
 			_blockage->removeTileAt(tileCoord);
+			this->_numCollected++;
+			this->_hud->numCollectedChanged(_numCollected);
+			SimpleAudioEngine::getInstance()->playEffect("item.mp3");
 		}
 		_foreground->removeTileAt(tileCoord);
 	}	
@@ -206,4 +283,27 @@ void HelloWorld::menuCloseCallback(Ref* pSender)
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
     exit(0);
 #endif
+}
+
+bool HelloWorld::HelloWorldHud::init()
+{
+	if (!Layer::init())
+	{
+		return false;
+	}
+	auto visibleSize = Director::getInstance()->getVisibleSize();
+	label = LabelTTF::create("0", "微软雅黑", 18.0f, Size(50, 20), TextHAlignment::RIGHT);
+	label->setColor(Color3B(255, 0, 0));
+	int margin = 15;
+	//label->setPosition(visibleSize.width - (label->getDimensions().width / 2) - margin, label->getDimensions().height / 2 + margin);
+	label->setPosition(0, visibleSize.height - margin);
+	this->addChild(label);
+	return true;
+}
+
+void HelloWorld::HelloWorldHud::numCollectedChanged(int numCollected)
+{
+	char showStr[20] = { 0 };
+	sprintf(showStr, "%d", numCollected);
+	label->setString(showStr);
 }
