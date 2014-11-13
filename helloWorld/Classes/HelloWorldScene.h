@@ -28,7 +28,8 @@ public:
 	void addEnemyAtPos(cocos2d::Point pos);
 	void enemyMoveFinished(cocos2d::Object* pSender);
 	void animateEnemy(cocos2d::Sprite* enemy);
-
+	void projectileMoveFinished(cocos2d::Object* pSender);
+	void testCollisions(float dt);
 	class  HelloWorldHud : public cocos2d::Layer
 	{
 	public:
@@ -45,7 +46,8 @@ private:
 	cocos2d::Sprite* _player;
 	cocos2d::TMXLayer*  _blockage;
 	cocos2d::TMXLayer* _foreground;
-	
+	cocos2d::Vector<cocos2d::Sprite*> _enemies;
+	cocos2d::Vector<cocos2d::Sprite*> _projectiles;
 	int _numCollected;
 	static HelloWorldHud* _hud;
 };

@@ -88,10 +88,10 @@ bool HelloWorld::init()
 			x = dict["x"].asInt();
 			y = dict["y"].asInt();
 			this->addEnemyAtPos(Point(x, y));
+			
 		}
-		
 	}
-	
+	this->schedule(schedule_selector(HelloWorld::testCollisions));
 	return true;
 #if 0
     Size visibleSize = Director::getInstance()->getVisibleSize();
@@ -150,7 +150,7 @@ void HelloWorld::addEnemyAtPos(cocos2d::Point pos)
 	
 	this->animateEnemy(enemy);
 	this->addChild(enemy);
-	//_enemies->pus
+	_enemies.pushBack(enemy);
 }
 void HelloWorld::enemyMoveFinished(cocos2d::Object* pSender)
 {
@@ -159,6 +159,8 @@ void HelloWorld::enemyMoveFinished(cocos2d::Object* pSender)
 }
 void HelloWorld::animateEnemy(cocos2d::Sprite* enemy)
 {
+
+	//控制怪物转身
 	auto actionTo1 = RotateTo::create(0, 0, 180);
 	auto actionTo2 = RotateTo::create(0, 0, 0);
 	auto diff = ccpSub(_player->getPosition(), enemy->getPosition());
@@ -227,6 +229,41 @@ void HelloWorld::onTouchEnded(Touch *touch, Event *unused_event)
 	{
 		this->setPlayerPosition(playerPos);
 	}
+
+//--------------------------
+	 touchLocation = touch->getLocation();
+	touchLocation = this->convertToNodeSpace(touchLocation);
+
+	auto projectile = Sprite::create("bullet.png");
+	projectile->setPosition(_player->getPosition());
+	projectile->setScale(0.25);
+	this->addChild(projectile);
+
+	int realX;
+
+	auto diff2 = touchLocation - _player->getPosition();
+	if (diff.x > 0)
+	{
+		realX = (_tileMap->getMapSize().width * _tileMap->getTileSize().width) + (projectile->getContentSize().width / 2);
+	}
+	else
+	{
+		realX = (_tileMap->getMapSize().width * _tileMap->getTileSize().width) - (projectile->getContentSize().width / 2);
+	}
+	float ratio = (float)diff2.y / (float)diff.x;
+	int realY = ((realX - projectile->getPosition().x) * ratio) + projectile->getPosition().y;
+	auto realDest = Point(realX, realY);
+	
+	int offRealX = realX - projectile->getPosition().x;
+	int offRealY = realY - projectile->getPosition().y;
+	float length = sqrtf((offRealX * offRealX) + (offRealY * offRealY));
+	float velocity = 480 / 1;// 480pixels/1sec
+	float realMoveDuration = length / velocity;
+
+	auto actionMoveDone = CallFuncN::create(CC_CALLBACK_1(HelloWorld::projectileMoveFinished, this));
+	projectile->runAction(Sequence::create(MoveTo::create(realMoveDuration, realDest), actionMoveDone, NULL));
+
+	_projectiles.pushBack(projectile);
 }
 void HelloWorld::setPlayerPosition(cocos2d::Point position)
 {
@@ -285,6 +322,53 @@ void HelloWorld::menuCloseCallback(Ref* pSender)
 #endif
 }
 
+void HelloWorld::projectileMoveFinished(cocos2d::Object* pSender)
+{
+	Sprite* sprite = (Sprite*)pSender;
+	this->removeChild(sprite);
+	_projectiles.eraseObject(sprite);
+}
+
+#define DEF_VALUE 10
+void HelloWorld::testCollisions(float dt)
+{
+	Vector<cocos2d::Sprite*> projectilesToDelete;
+	for (cocos2d::Sprite* projectile : _projectiles)
+	{
+		auto projectileRect = Rect(projectile->getPositionX() * DEF_VALUE - projectile->getContentSize().width / 2,
+			projectile->getPositionY() * DEF_VALUE - projectile->getContentSize().height / 4,
+												projectile->getContentSize().width,
+												projectile->getContentSize().height);
+
+	
+		Vector<cocos2d::Sprite*> targetsToDelete;
+		for (cocos2d::Sprite* target : _enemies)
+		{
+			auto targetRect = Rect(target->getPositionX() *DEF_VALUE - target->getContentSize().width / 2,
+												target->getPositionY() *DEF_VALUE- target->getContentSize().height / 2,
+												target->getContentSize().width,
+												target->getContentSize().height);
+
+			if (projectileRect.intersectsRect(targetRect))
+			{
+				targetsToDelete.pushBack(target);
+			}
+		}
+
+		for (cocos2d::Sprite* target : targetsToDelete)
+		{
+			_enemies.eraseObject(target);
+			this->removeChild(target);
+		}
+
+		if (targetsToDelete.size() > 0)
+		{
+			projectilesToDelete.pushBack(projectile);
+		}
+		targetsToDelete.clear();
+	}
+}
+
 bool HelloWorld::HelloWorldHud::init()
 {
 	if (!Layer::init())
@@ -307,3 +391,4 @@ void HelloWorld::HelloWorldHud::numCollectedChanged(int numCollected)
 	sprintf(showStr, "%d", numCollected);
 	label->setString(showStr);
 }
+
