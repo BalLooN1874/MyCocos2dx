@@ -159,7 +159,6 @@ void HelloWorld::enemyMoveFinished(cocos2d::Object* pSender)
 }
 void HelloWorld::animateEnemy(cocos2d::Sprite* enemy)
 {
-
 	//控制怪物转身
 	auto actionTo1 = RotateTo::create(0, 0, 180);
 	auto actionTo2 = RotateTo::create(0, 0, 0);
@@ -181,22 +180,25 @@ void HelloWorld::animateEnemy(cocos2d::Sprite* enemy)
 	auto actionMoveDone = CallFuncN::create(CC_CALLBACK_1(HelloWorld::enemyMoveFinished, this));
 	enemy->runAction(Sequence::create(actionmove, actionMoveDone, NULL));
 }
-cocos2d::Point HelloWorld::titleCoordForPosition(cocos2d::Point position)
+
+cocos2d::Point HelloWorld::titleCoordForPosition(cocos2d::Point& position)
 {
 	int x = position.x / _tileMap->getTileSize().width;
 	int y = ((_tileMap->getMapSize().height * _tileMap->getTileSize().height) - position.y) / _tileMap->getTileSize().height;
 	return Point(x, y);
 }
+
 void HelloWorld::onTouchEnded(Touch *touch, Event *unused_event)
 {
 	auto actionTo1 = RotateTo::create(0, 0, 180);
 	auto actionTo2 = RotateTo::create(0, 0, 0);
-	auto touchLocation = touch->getLocation();
-
+	auto touchLocation = touch->getLocation(); //获得点击位置
+	//转换坐标
 	touchLocation = this->convertToNodeSpace(touchLocation);
-
+	//玩家位置	
 	auto playerPos = _player->getPosition();
 	auto diff = touchLocation - playerPos;
+	//控制转身
 	if (abs(diff.x)  >  abs(diff.y))
 	{
 		if (diff.x > 0)
@@ -231,16 +233,16 @@ void HelloWorld::onTouchEnded(Touch *touch, Event *unused_event)
 	}
 
 //--------------------------
-	 touchLocation = touch->getLocation();
+   touchLocation = touch->getLocation();
 	touchLocation = this->convertToNodeSpace(touchLocation);
-
+	//设置子弹的位置
 	auto projectile = Sprite::create("bullet.png");
 	projectile->setPosition(_player->getPosition());
 	projectile->setScale(0.25);
 	this->addChild(projectile);
 
 	int realX;
-
+	//根据鼠标的方向，设置子弹方向
 	auto diff2 = touchLocation - _player->getPosition();
 	if (diff.x > 0)
 	{
@@ -265,6 +267,8 @@ void HelloWorld::onTouchEnded(Touch *touch, Event *unused_event)
 
 	_projectiles.pushBack(projectile);
 }
+
+//设置玩家的位置
 void HelloWorld::setPlayerPosition(cocos2d::Point position)
 {
 	Point tileCoord = this->titleCoordForPosition(position);
@@ -274,6 +278,7 @@ void HelloWorld::setPlayerPosition(cocos2d::Point position)
 		auto propertis = _tileMap->getPropertiesForGID(tileGid).asValueMap();
 		if (!propertis.empty())
 		{
+			//不能移动的区域
 			auto collision = propertis["Blockage"].asString();
 			CCLOG("log: %s", collision.c_str());
 			if ("true" == collision)
@@ -282,6 +287,7 @@ void HelloWorld::setPlayerPosition(cocos2d::Point position)
 				return;
 			}
 		}
+		//吃到食物
 		SimpleAudioEngine::getInstance()->playEffect("step.mp3");
 		auto collectable = propertis["Collectable"].asString();
 		if ("true" == collectable)
@@ -295,10 +301,11 @@ void HelloWorld::setPlayerPosition(cocos2d::Point position)
 	}	
 	_player->setPosition(position);
 }
+
+//设置视图的位置
 void HelloWorld::setViewPointCenter(cocos2d::Point position)
 {
 	auto winsize = Director::getInstance()->getWinSize();
-
 	int x = MAX(position.x, winsize.width / 2);
 	int y = MAX(position.y, winsize.height / 2);
 	x = MIN(x, (_tileMap->getMapSize().width * this->_tileMap->getTileSize().width) - winsize.width / 2);
@@ -322,6 +329,7 @@ void HelloWorld::menuCloseCallback(Ref* pSender)
 #endif
 }
 
+//不能移动
 void HelloWorld::projectileMoveFinished(cocos2d::Object* pSender)
 {
 	Sprite* sprite = (Sprite*)pSender;
@@ -335,6 +343,7 @@ void HelloWorld::testCollisions(float dt)
 	Vector<cocos2d::Sprite*> projectilesToDelete;
 	for (cocos2d::Sprite* projectile : _projectiles)
 	{
+		//设置子弹的位置。
 		auto projectileRect = Rect(projectile->getPositionX() * DEF_VALUE - projectile->getContentSize().width / 2,
 			projectile->getPositionY() * DEF_VALUE - projectile->getContentSize().height / 4,
 												projectile->getContentSize().width,
@@ -342,6 +351,7 @@ void HelloWorld::testCollisions(float dt)
 
 	
 		Vector<cocos2d::Sprite*> targetsToDelete;
+		//子弹发射方向。
 		for (cocos2d::Sprite* target : _enemies)
 		{
 			auto targetRect = Rect(target->getPositionX() *DEF_VALUE - target->getContentSize().width / 2,
@@ -349,6 +359,7 @@ void HelloWorld::testCollisions(float dt)
 												target->getContentSize().width,
 												target->getContentSize().height);
 
+			//击中了敌人
 			if (projectileRect.intersectsRect(targetRect))
 			{
 				targetsToDelete.pushBack(target);

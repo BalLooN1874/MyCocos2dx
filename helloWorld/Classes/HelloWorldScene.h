@@ -23,7 +23,7 @@ public:
 	void setViewPointCenter(cocos2d::Point position);
 	void onTouchEnded(cocos2d::Touch *touch, cocos2d::Event *unused_event);
 	void setPlayerPosition(cocos2d::Point position);
-	cocos2d::Point titleCoordForPosition(cocos2d::Point position);
+	cocos2d::Point titleCoordForPosition(cocos2d::Point& position);
 
 	void addEnemyAtPos(cocos2d::Point pos);
 	void enemyMoveFinished(cocos2d::Object* pSender);
